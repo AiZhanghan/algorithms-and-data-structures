@@ -6,6 +6,7 @@ Created on Thu May 16 10:44:11 2019
 """
 
 import numpy as np
+import edge
 
 class SparseGraph:
     
@@ -21,13 +22,13 @@ class SparseGraph:
     def e(self):
         return self.__m
     
-    def add_edge(self, v, w):
+    def add_edge(self, v, w, weight):
         assert 0 <= v < self.__n
         assert 0 <= w < self.__n
         
-        self.g[v].append(w)
+        self.g[v].append(edge.Edge(v, w, weight))
         if not self.__directed:
-            self.g[w].append(v)
+            self.g[w].append(edge.Edge(w, v, weight))
         
         self.__m += 1
         
@@ -36,10 +37,17 @@ class SparseGraph:
         assert 0 <= w < self.__n
         
         for i in range(len(self.g[v])):
-            if self.g[v][i] == w:
+            if self.g[v][i].other(v) == w:
                 return True
             return False
         
+    def show(self):
+        for i in range(self.__n):
+            print('vertex %d: ' % i, end = ' ')
+            for j in range(len(self.g[i])):
+                print('( to: %d, wt: %f)' % (self.g[i][j].w(),
+                                            self.g[i][j].wt()), end = ' ')
+            print('\n')
     class adjIterator:
         
         def __init__(self, graph, v):
@@ -49,15 +57,15 @@ class SparseGraph:
             
         def begin(self):
             self.__index = 0
-            if len(self.__graph.g):
+            if len(self.__graph.g[self.__v]):
                 return self.__graph.g[self.__v][self.__index]
-            return -1
+            return None
         
         def next_item(self):
             self.__index += 1
             if self.__index < len(self.__graph.g[self.__v]):
                 return self.__graph.g[self.__v][self.__index]
-            return -1
+            return None
         
         def end(self):
             return self.__index >= len(self.__graph.g[self.__v])

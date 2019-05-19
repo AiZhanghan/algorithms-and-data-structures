@@ -43,7 +43,7 @@ class SparseGraph:
         
     def show(self):
         for i in range(self.__n):
-            print('vertex: ', end = ' ')
+            print('vertex %d: ' % i, end = ' ')
             for j in range(len(self.g[i])):
                 print('( to: %d, wt: %f)' % (self.g[i][j].w(),
                                             self.g[i][j].wt()), end = ' ')
@@ -57,7 +57,7 @@ class SparseGraph:
             
         def begin(self):
             self.__index = 0
-            if len(self.__graph.g):
+            if len(self.__graph.g[self.__v]):
                 return self.__graph.g[self.__v][self.__index]
             return None
         
